@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react';
 import banner from '../img/banner.jpg';
 import headerLogo from '../img/header-logo.png';
-import { NavLink, useHistory } from 'react-router-dom'; 
+import { NavLink, useNavigate } from 'react-router-dom';
 import { searchGoods } from '../actions/actionCreators';
 import { useDispatch } from 'react-redux';
 
 export default function Menu() {
   const dispatch = useDispatch();
-  const history = useHistory(); 
+  const navigate = useNavigate(); 
 
   const henderClick = () => {
     const searchFormEl = document.querySelector('[data-id=search-form]');
@@ -17,7 +17,7 @@ export default function Menu() {
 
   const handleChange = ({ target }) => {
     if (target.value) {
-      history.push('/catalog'); 
+      navigate('/catalog'); 
       dispatch(searchGoods(target.value));
     }
   }
@@ -28,22 +28,22 @@ export default function Menu() {
         <div className='row'>
           <div className='col'>
             <nav className='navbar navbar-expand-sm navbar-light bg-light'>
-              <NavLink to='/' exact className='navbar-brand'>
+              <NavLink to='/'  className='navbar-brand'>
                 <img src={headerLogo} alt='Bosa Noga' />
               </NavLink>
               <div className='collapase navbar-collapse' id='navbarMain'>
                 <ul className='navbar-nav mr-auto'>
                   <li className='nav-item active'>
-                    <NavLink to='/' exact className='nav-link'>Главная</NavLink>
+                    <NavLink to='/'  className='nav-link'>Главная</NavLink>
                   </li>
                   <li className='nav-item'>
-                    <NavLink to='/catalog' exact className='nav-link'>Каталог</NavLink>
+                    <NavLink to='/catalog'  className='nav-link'>Каталог</NavLink>
                   </li>
                   <li className='nav-item'>
-                    <NavLink to='/about' exact className='nav-link'>О магазине</NavLink>
+                    <NavLink to='/about'  className='nav-link'>О магазине</NavLink>
                   </li>
                   <li className='nav-item'>
-                    <NavLink to='/contacts' exact className='nav-link'>Контакты</NavLink>
+                    <NavLink to='/contacts'  className='nav-link'>Контакты</NavLink>
                   </li>
                 </ul>
                 <div>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { NavLink } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router'; // Используйте useHistory из react-router
+import { /*NavLink,*/ useNavigate } from 'react-router-dom'; 
+//import { useDispatch } from 'react-redux';
 import useJsonFetch from '../hooks/useJsonFetch';
 
 export default function ProductPage({ match }) {
@@ -12,7 +11,7 @@ export default function ProductPage({ match }) {
   const [selected, setSelected] = useState(false);
   const [amount, setAmount] = useState(0);
   const [mark, setMark] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     image: '',
@@ -66,7 +65,7 @@ export default function ProductPage({ match }) {
   };
 
   const hendleRef = () => {
-    history.replace('cart');
+    navigate('cart');
   };
 
   return (
