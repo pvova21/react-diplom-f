@@ -7,8 +7,8 @@ export default function Find() {
     const {text} = useSelector(state => state.serviceSearch)
     const dispatch = useDispatch();
 
-    const handleChange = ({target}) => { // поисковая строка в каталоге
-        dispatch(searchGoods(target.value))         
+    const handleChange = ({target}) => { 
+        dispatch(searchGoods(target.value))
     }
 
     return (

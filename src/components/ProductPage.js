@@ -1,12 +1,11 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { /*NavLink,*/ useNavigate } from 'react-router-dom'; 
-//import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom'; 
 import useJsonFetch from '../hooks/useJsonFetch';
 
 export default function ProductPage({ match }) {
-  let matchId = match.params.id;
-  let num = matchId.match(/\d+/);
-  const url = process.env.REACT_APP_DATA_CATEGORIES_URL + '/' + num[0];
+  let matchId = match && match.params && match.params.id;
+  let num = matchId ? matchId.match(/\d+/) : null;
+  const url = num ? process.env.REACT_APP_DATA_CATEGORIES_URL + '/' + num[0] : null;
   const [data] = useJsonFetch(url, {});
   const [selected, setSelected] = useState(false);
   const [amount, setAmount] = useState(0);
@@ -25,7 +24,7 @@ export default function ProductPage({ match }) {
   });
 
   useEffect(() => {
-    if (data.id !== undefined) {
+    if (data && data.id !== undefined) {
       setForm({
         image: data.images[0],
         title: data.title,

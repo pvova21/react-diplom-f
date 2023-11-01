@@ -1,240 +1,162 @@
 import {
-    FETCH_BESTSALES_REQUEST,
-    FETCH_BESTSALES_FAILURE,
-    FETCH_BESTSALES_SUCCESS,
+  FETCH_BESTSALES_REQUEST,
+  FETCH_BESTSALES_FAILURE,
+  FETCH_BESTSALES_SUCCESS,
 
-    FETCH_CATEGORIES_REQUEST,
-    FETCH_CATEGORIES_FAILURE,
-    FETCH_CATEGORIES_SUCCESS,
+  FETCH_CATEGORIES_REQUEST,
+  FETCH_CATEGORIES_FAILURE,
+  FETCH_CATEGORIES_SUCCESS,
 
-    FETCH_DATA_CATEGORIES_REQUEST,
-    FETCH_DATA_CATEGORIES_FAILURE,
-    FETCH_DATA_CATEGORIES_SUCCESS,
+  FETCH_DATA_CATEGORIES_REQUEST,
+  FETCH_DATA_CATEGORIES_FAILURE,
+  FETCH_DATA_CATEGORIES_SUCCESS,
 
-    FIND_GOODS
+  FIND_GOODS
+} from './actionTypes';
 
-  } from './actionTypes';
-
-export const findGoods = (text) => ({ // поиск
+export const findGoods = (text) => ({
   type: FIND_GOODS,
   payload: {
     text
   }
 });
 
-export const fetchServicesRequest = () => ({ // запрос на сервер для хитов продаж
+export const fetchServicesRequest = () => ({
   type: FETCH_BESTSALES_REQUEST,
 });
-  
-export const fetchServicesFailure = error => ({ // ошибка принятия хитов продаж
+
+export const fetchServicesFailure = (error) => ({
   type: FETCH_BESTSALES_FAILURE,
   payload: {
     error,
   },
 });
-  
-export const fetchServicesSuccess = items => ({ // успешное принятие хитов продаж
+
+export const fetchServicesSuccess = (items) => ({
   type: FETCH_BESTSALES_SUCCESS,
   payload: {
     items,
   },
 });
 
-export const fetchCategoriesRequest = () => ({ // запрос на сервер для заголовков
+export const fetchCategoriesRequest = () => ({
   type: FETCH_CATEGORIES_REQUEST,
 });
-  
-export const fetchCategoriesFailure = error => ({ // ошибка принятия заголовков
+
+export const fetchCategoriesFailure = (error) => ({
   type: FETCH_CATEGORIES_FAILURE,
   payload: {
     error,
   },
 });
-  
-export const fetchCategoriesSuccess = items => ({ // успешное принятие заголовков
+
+export const fetchCategoriesSuccess = (items) => ({
   type: FETCH_CATEGORIES_SUCCESS,
   payload: {
     items,
   },
 });
 
-export const fetchDataCategoriesRequest = () => ({ // запрос на сервер для каталога
+export const fetchDataCategoriesRequest = () => ({
   type: FETCH_DATA_CATEGORIES_REQUEST,
 });
-  
-export const fetchDataCategoriesFailure = err => ({ // ошибка принятия данных каталога
+
+export const fetchDataCategoriesFailure = (error) => ({
   type: FETCH_DATA_CATEGORIES_FAILURE,
   payload: {
-    err,
+    error,
   },
 });
-  
-export const fetchDataCategoriesSuccess = (data, text) => ({ // успешное принятие данных каталога
+
+export const fetchDataCategoriesSuccess = (data, text = null) => ({
   type: FETCH_DATA_CATEGORIES_SUCCESS,
   payload: {
     data,
-    text
+    text,
   },
 });
 
-export const fetchBestSales = () => async (dispatch) => { // получение с сервера хитов продаж
-  dispatch(fetchServicesRequest())
+export const fetchBestSales = () => async (dispatch) => {
+  dispatch(fetchServicesRequest());
   try {
-    const response = await fetch(`${process.env.REACT_APP_BESTSALES_URL}`)
+    const response = await fetch(`${process.env.REACT_APP_BESTSALES_URL}`);
     if (!response.ok) {
-      throw new Error(response.statusText)
+      throw new Error(response.statusText);
     }
-    const data = await response.json()
-    dispatch(fetchServicesSuccess(data))
+    const data = await response.json();
+    dispatch(fetchServicesSuccess(data));
   } catch (error) {
-    dispatch(fetchServicesFailure(error.message))
+    dispatch(fetchServicesFailure(error.message));
   }
 };
 
-export const fetchCategories = () => async (dispatch) => { // получение с сервера заголовков продаж
+export const fetchCategories = () => async (dispatch) => {
   dispatch(fetchCategoriesRequest());
   try {
     const response = await fetch(`${process.env.REACT_APP_CATEGORIES_URL}`);
-    
     if (!response.ok) {
       throw new Error(response.statusText);
     }
     const data = await response.json();
     dispatch(fetchCategoriesSuccess(data));
   } catch (error) {
-    console.log(error);
     dispatch(fetchCategoriesFailure(error.message));
   }
 };
 
-export const fetchDataCategories = (id=false, offset=false, text=false) => async (dispatch) => { // получение с сервера каталога продаж
+export const fetchDataCategories = (id = null, offset = null, text = null) => async (dispatch) => {
   dispatch(fetchDataCategoriesRequest());
-  if(id && !offset && !text) { // 1
-    try {
-      const response = await fetch(`${process.env.REACT_APP_DATA_CATEGORIES_URL + '?categoryId=' + id}`)
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      const data = await response.json()
-      dispatch(fetchDataCategoriesSuccess(data));
-    } catch (error) {
-      console.log(error)
-      dispatch(fetchDataCategoriesFailure(error.message))
+  let url = process.env.REACT_APP_DATA_CATEGORIES_URL;
+
+  if (id) {
+    url += `?categoryId=${id}`;
+    if (text) {
+      url += `&q=${text}`;
     }
-    } else if(id && !offset && text) { //2
-      try {
-        const response = await fetch(`${process.env.REACT_APP_DATA_CATEGORIES_URL + '?categoryId=' + id + '&q=' + text}`)
-        if (!response.ok) {
-          throw new Error(response.statusText)
-        }
-        const data = await response.json()
-        dispatch(fetchDataCategoriesSuccess(data, text))
-      } catch (error) {
-        console.log(error);
-        dispatch(fetchDataCategoriesFailure(error.message))
-      }
-    } else if(id && offset) { //3
-      try {
-        const response = await fetch(`${process.env.REACT_APP_DATA_CATEGORIES_URL + '?categoryId=' + id + offset}`)
-        console.log(`${process.env.REACT_APP_DATA_CATEGORIES_URL + '?categoryId=' + id + offset}`)
-        console.log(text);
-        
-        if (!response.ok) {
-          throw new Error(response.statusText)
-        }
-        const data = await response.json()
-        dispatch(fetchDataCategoriesSuccess(data))
-        console.log(data);
-      } catch (error) {
-        console.log(error);
-        dispatch(fetchDataCategoriesFailure(error.message))
-      }
-  } else if(!id && !offset && !text) { //4
-      try {
-        const response = await fetch(`${process.env.REACT_APP_DATA_CATEGORIES_URL}`)
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-        const data = await response.json()
-        dispatch(fetchDataCategoriesSuccess(data));
-      } catch (error) {
-        console.log(error);
-        dispatch(fetchDataCategoriesFailure(error.message));
-      }
-  }  else if(!id && !offset && text) { //5
-    try {
-      const response = await fetch(`${process.env.REACT_APP_DATA_CATEGORIES_URL + '?q=' + text}`)
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      const data = await response.json();
-      console.log(data);
-      console.log(text);
-      dispatch(fetchDataCategoriesSuccess(data));
-    } catch (error) {
-      console.log(error);
-      dispatch(fetchDataCategoriesFailure(error.message));
+  } else if (text) {
+    url += `?q=${text}`;
+  }
+
+  if (offset) {
+    url += offset;
+  }
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(response.statusText);
     }
-  } else if(!id && offset && text) { // 6
-    try {
-      const response = await fetch(`${process.env.REACT_APP_DATA_CATEGORIES_URL + '?q=' + text + offset}`);
-  
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      const data = await response.json();
-      console.log(data);
-      console.log(text);
-      dispatch(fetchDataCategoriesSuccess(data, text));
-    } catch (error) {
-      console.log(error);
-      dispatch(fetchDataCategoriesFailure(error.message));
-    }
-}
-   else if(!id && offset && !text) { //7
-      try {
-        const response = await fetch(`${process.env.REACT_APP_DATA_CATEGORIES_URL + '?' + offset}`);
-    
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-        const data = await response.json();
-        
-        dispatch(fetchDataCategoriesSuccess(data));
-      } catch (error) {
-        console.log(error);
-        dispatch(fetchDataCategoriesFailure(error.message));
-      }
+    const data = await response.json();
+    dispatch(fetchDataCategoriesSuccess(data, text));
+  } catch (error) {
+    dispatch(fetchDataCategoriesFailure(error.message));
   }
 };
 
 export const searchGoods = (text) => async (dispatch) => {
-  dispatch(findGoods(text))
-
+  dispatch(findGoods(text));
   try {
-    const response = await fetch(`${process.env.REACT_APP_FIND_GOODS_URL + text}`)
+    const response = await fetch(`${process.env.REACT_APP_FIND_GOODS_URL}${text}`);
     if (!response.ok) {
-      throw new Error(response.statusText)
+      throw new Error(response.statusText);
     }
-    const data = await response.json()
-    dispatch(fetchDataCategoriesSuccess(data))
- 
+    const data = await response.json();
+    dispatch(fetchDataCategoriesSuccess(data));
   } catch (error) {
-    dispatch(fetchDataCategoriesSuccess(error.message))
+    dispatch(fetchDataCategoriesFailure(error.message));
   }
 };
 
-export const fetchDataProduct = (id) => async (dispatch) => { // данные одного товара
-  dispatch(fetchDataCategoriesRequest())
-    try {
-      const response = await fetch(`${process.env.REACT_APP_DATA_CATEGORIES_URL + id}`)
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      const data = await response.json()
-      dispatch(fetchDataCategoriesSuccess(data));
-    } catch (error) {
-      console.log(error)
-      dispatch(fetchDataCategoriesFailure(error.message))
+export const fetchDataProduct = (id) => async (dispatch) => {
+  dispatch(fetchDataCategoriesRequest());
+  try {
+    const response = await fetch(`${process.env.REACT_APP_DATA_CATEGORIES_URL}/${id}`);
+    if (!response.ok) {
+      throw new Error(response.statusText);
     }
-}
+    const data = await response.json();
+    dispatch(fetchDataCategoriesSuccess(data));
+  } catch (error) {
+    dispatch(fetchDataCategoriesFailure(error.message));
+  }
+};

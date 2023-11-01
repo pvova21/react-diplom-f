@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Измените импорт на Routes
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; 
 import HeadPage from './components/HeadPage';
 import CatalogPage from './components/CatalogPage';
 import About from './components/About';

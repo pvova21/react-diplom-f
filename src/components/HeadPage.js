@@ -8,7 +8,7 @@ export default function HeadPage() {
             <Bestsellers />
             <section className='container catalog'>
                 <h2 className='text-center'>Каталог</h2>
-                <Catalog/>  
+                <Catalog/>
             </section>
         </Fragment>
     );
